@@ -411,7 +411,12 @@ function App() {
           <Button className="m-2" onClick={reset} variant="danger">
             Reset
           </Button>
-          <Button className="m-2" onClick={saveDemo} variant="success">
+          <Button
+            className="mx-2"
+            style={{ float: "right" }}
+            onClick={saveDemo}
+            variant="success"
+          >
             Copy Demo details
           </Button>
         </Container>
