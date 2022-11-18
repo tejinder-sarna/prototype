@@ -381,7 +381,7 @@ function App() {
 
   return (
     <div className="App">
-      <Container className="span-2">
+      <Container className="span-2 p-3">
         <span className="h3">+12155932785</span>
         <hr />
         <span className="h4">Phone Tree</span>
@@ -404,7 +404,7 @@ function App() {
                 }}
                 variant={i === activeDemo ? "primary" : "light"}
               >
-                Demo {i}
+                Demo {i + 1}
               </Button>
             );
           })}
