@@ -1,13 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  Accordion,
-  Badge,
-  Button,
-  Card,
-  Container,
-  Form,
-  Row,
-} from "react-bootstrap";
+import { Accordion, Badge, Button, Container, Form } from "react-bootstrap";
 
 const types = [
   {
@@ -31,15 +23,15 @@ const teamMembers = [
   },
   {
     name: "Manuk",
-    phone: "(295) 775-8139",
+    phone: "(295) 775-8198",
   },
   {
     name: "Michael",
-    phone: "(295) 775-8139",
+    phone: "(295) 775-8137",
   },
   {
     name: "Yevgen",
-    phone: "(295) 775-8139",
+    phone: "(295) 775-7139",
   },
 ];
 
@@ -56,7 +48,7 @@ const demo1 = [
             value: 2,
             user: "Sales",
             nickName: "Sales",
-            phone: "(295) 775-8139",
+            phone: "(295) 775-8039",
             num: 1,
           },
           {
@@ -83,7 +75,7 @@ const demo1 = [
             value: 2,
             user: "Sales",
             nickName: "Sales",
-            phone: "(295) 775-8139",
+            phone: "(295) 795-8139",
             num: 1,
           },
           {
@@ -111,7 +103,7 @@ const demo1 = [
             value: 2,
             user: "Sales",
             nickName: "Sales",
-            phone: "(295) 775-8139",
+            phone: "(215) 775-8139",
             num: 1,
           },
           {
@@ -138,7 +130,7 @@ const demo1 = [
             value: 2,
             user: "Sales",
             nickName: "Sales",
-            phone: "(295) 775-8139",
+            phone: "(295) 775-8138",
             num: 1,
           },
           {
@@ -167,14 +159,14 @@ const demo2 = [
         num: 1,
         nickName: "Dev",
         user: "Tejinder",
-        phone: "(215) 712-8543",
+        phone: "(215) 709-8523",
       },
       {
         value: 2,
         num: 2,
         nickName: "Tester",
         user: "Yevgen",
-        phone: "(295) 775-8139",
+        phone: "(295) 770-8139",
       },
       {
         value: 1,
@@ -255,7 +247,7 @@ const demo3 = [
             num: 1,
             nickName: "React Native",
             user: "Tejinder",
-            phone: "(215) 712-8543",
+            phone: "(215) 712-8503",
           },
           {
             value: 2,
@@ -276,7 +268,7 @@ const demo3 = [
             num: 1,
             nickName: "Lead",
             user: "Manuk",
-            phone: "(295) 775-8139",
+            phone: "(296) 775-8139",
           },
         ],
       },
@@ -318,6 +310,7 @@ function App() {
   const [random, setRandom] = useState();
   const [phoneTreeLines, setPhoneTreeLines] = useState(demo1);
   const [activeDemo, setActiveDemo] = useState(0);
+  console.log(random);
   const setDemo = (num) => {
     setActiveDemo(num);
     setPhoneTreeLines(demos[num]);
