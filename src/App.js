@@ -1,5 +1,323 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Accordion, Badge, Button, Container, Form } from "react-bootstrap";
+import ReactFlow, {
+  Controls,
+  Background,
+  useNodesState,
+  useEdgesState,
+} from "reactflow";
+import { Handle, Position } from "reactflow";
+
+import "reactflow/dist/style.css";
+
+const initialNodes = [
+  {
+    id: "1",
+    data: {
+      label: "Main Greeting",
+    },
+    type: "custom",
+    position: {
+      x: 0,
+      y: 0,
+    },
+  },
+  {
+    id: "2",
+    data: {
+      label: "Language 1",
+      num: 1,
+    },
+    type: "custom",
+    position: {
+      x: -480,
+      y: 240,
+    },
+  },
+  {
+    id: "4",
+    data: {
+      label: "Office 1",
+      num: 1,
+    },
+    type: "custom",
+    position: {
+      x: -720,
+      y: 480,
+    },
+  },
+  {
+    id: "5",
+    data: {
+      label: "Office 2",
+      num: 2,
+    },
+    type: "custom",
+    position: {
+      x: -240,
+      y: 480,
+    },
+  },
+  {
+    id: "3",
+    data: {
+      label: "Language 2",
+      num: 2,
+    },
+    type: "custom",
+    position: {
+      x: 480,
+      y: 240,
+    },
+  },
+  {
+    id: "6",
+    data: {
+      label: "Office 1",
+      num: 1,
+    },
+    type: "custom",
+    position: {
+      x: 240,
+      y: 480,
+    },
+  },
+  {
+    id: "7",
+    data: {
+      label: "Office 2",
+      num: 2,
+    },
+    type: "custom",
+    position: {
+      x: 720,
+      y: 480,
+    },
+  },
+  {
+    id: "8",
+    data: {
+      label: "Sales",
+      num: 1,
+      last: true,
+    },
+    type: "custom",
+    position: {
+      x: -780 - 120,
+      y: 720,
+    },
+  },
+  {
+    id: "9",
+    data: {
+      label: "Customer Support",
+      last: true,
+      num: 2,
+    },
+    type: "custom",
+    position: {
+      x: -600 - 120,
+      y: 720,
+    },
+  },
+  {
+    id: "10",
+    data: {
+      label: "Office Hours",
+      num: 3,
+      last: true,
+    },
+    type: "custom",
+    position: {
+      x: -420 - 120,
+      y: 720,
+    },
+  },
+  {
+    id: "11",
+    data: {
+      label: "Sales",
+      num: 1,
+      last: true,
+    },
+    type: "custom",
+    position: {
+      x: -240 - 120,
+      y: 720,
+    },
+  },
+  {
+    id: "12",
+    data: {
+      label: "Customer Support",
+      num: 2,
+      last: true,
+    },
+    type: "custom",
+    position: {
+      x: -120,
+      y: 720,
+    },
+  },
+  {
+    id: "13",
+    data: {
+      label: "Sales",
+      num: 1,
+      last: true,
+    },
+    type: "custom",
+    position: {
+      x: 60,
+      y: 720,
+    },
+  },
+  {
+    id: "14",
+    data: {
+      label: "Customer Support",
+      num: 2,
+      last: true,
+    },
+    type: "custom",
+    position: {
+      x: 240,
+      y: 720,
+    },
+  },
+  {
+    id: "15",
+    data: {
+      label: "Office Hours",
+      num: 3,
+      last: true,
+    },
+    type: "custom",
+    position: {
+      x: 420,
+      y: 720,
+    },
+  },
+  {
+    id: "16",
+    data: {
+      label: "Sales",
+      num: 1,
+      last: true,
+    },
+    type: "custom",
+    position: {
+      x: 720 - 120,
+      y: 720,
+    },
+  },
+  {
+    id: "17",
+    data: {
+      label: "Customer Support",
+      num: 2,
+      last: true,
+    },
+    type: "custom",
+    position: {
+      x: 840,
+      y: 720,
+    },
+  },
+];
+
+const initialEdges = [
+  { id: "e1-2", source: "1", target: "2", animated: true },
+  { id: "e1-3", source: "1", target: "3", animated: true },
+  { id: "e2-4", source: "2", target: "4", animated: true },
+  { id: "e2-5", source: "2", target: "5", animated: true },
+  { id: "e3-6", source: "3", target: "6", animated: true },
+  { id: "e3-7", source: "3", target: "7", animated: true },
+  { id: "e4-8", source: "4", target: "8", animated: true },
+  { id: "e4-9", source: "4", target: "9", animated: true },
+  { id: "e4-10", source: "4", target: "10", animated: true },
+  { id: "e5-11", source: "5", target: "11", animated: true },
+  { id: "e5-12", source: "5", target: "12", animated: true },
+  { id: "e6-13", source: "6", target: "13", animated: true },
+  { id: "e6-14", source: "6", target: "14", animated: true },
+  { id: "e6-15", source: "6", target: "15", animated: true },
+  { id: "e7-16", source: "7", target: "16", animated: true },
+  { id: "e7-17", source: "7", target: "17", animated: true },
+];
+
+function CustomNode({ data }) {
+  return (
+    <div
+      style={{
+        minHeight: 50,
+        maxHeight: 200,
+        minWidth: 150,
+        maxWidth: 200,
+        border: "1px solid #eee",
+        padding: 5,
+        borderRadius: 5,
+        background: "white",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      {data.num && (
+        <>
+          <Handle type="target" position={Position.Top} />
+          <label
+            htmlFor="text"
+            className=" btn btn-primary"
+            style={{
+              position: "absolute",
+              top: -16,
+              fontSize: 12,
+              padding: "4px 8px",
+            }}
+          >
+            Press {data.num}
+          </label>
+        </>
+      )}
+      <div>
+        <span style={{ fontSize: 12 }}>{data.label}</span>
+      </div>
+      {!data.last && <Handle type="source" position={Position.Bottom} id="a" />}
+    </div>
+  );
+}
+
+// const convertToNode = (line, parents = null, index = 0, offset, parentNode) => {
+//   let level = 1;
+//   switch (typeof parents) {
+//     case "number":
+//       if (parents > 0) level = 2;
+//       break;
+//     case "object":
+//       level = 3;
+//       break;
+//     default:
+//       break;
+//   }
+//   const h = typeof parents === "number" ? parents : parents[1];
+
+//   return {
+//     node: {
+//       id: `${index}.${level}`,
+//       data: { label: line.nickName, num: line.num },
+//       type: "custom",
+//       position: {
+//         x: 120 * offset + (parentNode?.position.x / 2 || 0),
+//         y: 120 * level,
+//       },
+//     },
+//     edge: {
+//       id: `e${h}-${index}`,
+//       source: `${h}`,
+//       target: `${index + h + level}`,
+//     },
+//   };
+// };
 
 const types = [
   {
@@ -305,15 +623,152 @@ const demo3 = [
 
 const demos = [demo1, demo2, demo3];
 
+function Flow({ setActive }) {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const nodeTypes = useMemo(() => ({ custom: CustomNode }), []);
+
+  const onConnect = useCallback((params) => {}, []);
+  const [darkMode, setDarkMode] = useState(true);
+
+  return (
+    <div
+      style={{
+        height: "100vh",
+        width: "100vw",
+        position: "absolute",
+        top: 0,
+        left: 0,
+        zIndex: 500,
+      }}
+    >
+      <div
+        style={{
+          width: 200,
+          height: 50,
+          position: "absolute",
+          backgroundColor: "white",
+          zIndex: 1000,
+          right: 0,
+          borderBottomLeftRadius: 8,
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Button
+          variant="light"
+          onClick={() => {
+            setDarkMode((mode) => !mode);
+          }}
+          className="mx-2"
+        >
+          {darkMode ? "Light Mode" : "Dark Mode"}
+        </Button>
+        <Button
+          variant="danger"
+          onClick={() => {
+            setActive(false);
+          }}
+        >
+          Close
+        </Button>
+      </div>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        nodeTypes={nodeTypes}
+        onConnect={onConnect}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        nodesFocusable={false}
+        fitView
+        style={{ background: darkMode ? "rgb(26,26,43)" : "#EAEAEA" }}
+      >
+        <Controls showInteractive={false} />
+        <Background />
+      </ReactFlow>
+    </div>
+  );
+}
+
+// const getNodes = (phoneTreeLines = []) => {
+//   let nodes = [
+//     {
+//       id: "0",
+//       data: {
+//         label: "Main Greeting",
+//       },
+//       type: "custom",
+//       position: {
+//         x: 0,
+//         y: 0,
+//       },
+//     },
+//   ];
+
+//   let edges = [];
+//   let len = phoneTreeLines.length;
+//   for (let x = 0; x < len; x++) {
+//     const currentLine = phoneTreeLines[x];
+//     const hasLines = currentLine.lines?.length > 0;
+//     const { node, edge } = convertToNode(
+//       currentLine,
+//       0,
+//       x + 1,
+//       x + 1 <= len / 2 ? -(x + 1) : x,
+//       null
+//     );
+//     nodes.push(node);
+//     edges.push(edge);
+//     if (hasLines) {
+//       for (let y = 0; y < currentLine.lines.length; y++) {
+//         len = currentLine.lines.length;
+//         const currentChildLine = currentLine.lines[y];
+//         const hasLines = currentChildLine.lines?.length > 0;
+//         const { node1, edge1 } = convertToNode(
+//           currentChildLine,
+//           x + 1,
+//           y + 1,
+//           y + 1 <= len / 2 ? -(y + 1) : y,
+//           node
+//         );
+//         nodes.push(node1);
+//         edges.push(edge1);
+//         // if (hasLines) {
+//         //   for (let z = 0; z < currentChildLine.lines.length; z++) {
+//         //     len = currentChildLine.lines.length;
+//         //     const current = currentChildLine.lines[z];
+//         //     const { node, edge } = convertToNode(
+//         //       current,
+//         //       [x + 1, y + 1],
+//         //       z + 1,
+//         //       z + 1 <= len / 2 ? -(z + 1) : z
+//         //     );
+//         //     nodes.push(node);
+//         //     edges.push(edge);
+//         //   }
+//         // }
+//       }
+//     }
+//   }
+//   console.log(nodes);
+//   console.log(edges);
+// };
+
 function App() {
   const [phoneTreeEnabled, setPhoneTreeEnabled] = useState(true);
+  const [active, setActive] = useState(false);
+
   const [random, setRandom] = useState();
   const [phoneTreeLines, setPhoneTreeLines] = useState(demo1);
   const [activeDemo, setActiveDemo] = useState(0);
-  console.log(random);
   const setDemo = (num) => {
     setActiveDemo(num);
     setPhoneTreeLines(demos[num]);
+    setRandom(Math.random() * 10000);
   };
 
   const saveDemo = () => {
@@ -374,6 +829,7 @@ function App() {
 
   return (
     <div className="App">
+      {active && <Flow setActive={setActive} />}
       <Container className="span-2 p-3">
         <span className="h3">+12155932785</span>
         <hr />
@@ -403,6 +859,16 @@ function App() {
           })}
           <Button className="m-2" onClick={reset} variant="danger">
             Reset
+          </Button>
+          <Button
+            className="mx-2"
+            style={{ float: "right" }}
+            onClick={() => {
+              setActive(true);
+            }}
+            variant="info"
+          >
+            Visualize Phone Tree
           </Button>
           <Button
             className="mx-2"
