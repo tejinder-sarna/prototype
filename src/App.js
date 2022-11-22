@@ -9,241 +9,126 @@ import ReactFlow, {
 import { Handle, Position } from "reactflow";
 
 import "reactflow/dist/style.css";
+import drawTree from "./helper";
 
-const initialNodes = [
-  {
-    id: "1",
-    data: {
-      label: "Main Greeting",
-    },
-    type: "custom",
-    position: {
-      x: 0,
-      y: 0,
-    },
-  },
-  {
-    id: "2",
-    data: {
-      label: "Language 1",
+const demo1 = {
+  value: 1,
+  id: 0,
+  nickName: "Main Greeting",
+  lines: [
+    {
+      value: 1,
       num: 1,
+      id: 1,
+      nickName: "Sales",
+      lines: [
+        {
+          value: 2,
+          num: 1,
+          id: 2,
+          nickName: "Level 1",
+          user: "Jeremy",
+          phone: "(215) 212-8543",
+          lines: [],
+        },
+        {
+          value: 2,
+          num: 2,
+          nickName: "Level 2",
+          user: "Lauren",
+          phone: "(205) 712-8241",
+          lines: [],
+          id: 3,
+        },
+      ],
     },
-    type: "custom",
-    position: {
-      x: -480,
-      y: 240,
-    },
-  },
-  {
-    id: "4",
-    data: {
-      label: "Office 1",
-      num: 1,
-    },
-    type: "custom",
-    position: {
-      x: -720,
-      y: 480,
-    },
-  },
-  {
-    id: "5",
-    data: {
-      label: "Office 2",
+    {
+      value: 1,
       num: 2,
+      nickName: "Engineering",
+      id: 4,
+      lines: [
+        {
+          value: 1,
+          num: 1,
+          nickName: "Frontend",
+          id: 5,
+          lines: [
+            {
+              value: 2,
+              num: 1,
+              nickName: "React Native",
+              user: "Tejinder",
+              phone: "(215) 712-8503",
+              lines: [],
+              id: 6,
+            },
+            {
+              value: 2,
+              num: 2,
+              nickName: "Tester",
+              user: "Yevgen",
+              phone: "(295) 775-8139",
+              lines: [],
+              id: 7,
+            },
+          ],
+        },
+        {
+          value: 1,
+          num: 2,
+          nickName: "Backend",
+          id: 8,
+          lines: [
+            {
+              value: 2,
+              num: 1,
+              nickName: "Lead",
+              user: "Manuk",
+              phone: "(296) 775-8139",
+              lines: [],
+              id: 9,
+            },
+          ],
+        },
+      ],
     },
-    type: "custom",
-    position: {
-      x: -240,
-      y: 480,
-    },
-  },
-  {
-    id: "3",
-    data: {
-      label: "Language 2",
-      num: 2,
-    },
-    type: "custom",
-    position: {
-      x: 480,
-      y: 240,
-    },
-  },
-  {
-    id: "6",
-    data: {
-      label: "Office 1",
-      num: 1,
-    },
-    type: "custom",
-    position: {
-      x: 240,
-      y: 480,
-    },
-  },
-  {
-    id: "7",
-    data: {
-      label: "Office 2",
-      num: 2,
-    },
-    type: "custom",
-    position: {
-      x: 720,
-      y: 480,
-    },
-  },
-  {
-    id: "8",
-    data: {
-      label: "Sales",
-      num: 1,
-      last: true,
-    },
-    type: "custom",
-    position: {
-      x: -780 - 120,
-      y: 720,
-    },
-  },
-  {
-    id: "9",
-    data: {
-      label: "Customer Support",
-      last: true,
-      num: 2,
-    },
-    type: "custom",
-    position: {
-      x: -600 - 120,
-      y: 720,
-    },
-  },
-  {
-    id: "10",
-    data: {
-      label: "Office Hours",
+    {
+      value: 1,
       num: 3,
-      last: true,
+      id: 10,
+      nickName: "Customer Support",
+      lines: [
+        {
+          value: 2,
+          num: 1,
+          nickName: "Lauren",
+          user: "Lauren",
+          phone: "(215) 711-8193",
+          lines: [],
+          id: 11,
+        },
+        {
+          value: 2,
+          num: 2,
+          nickName: "Fatima",
+          user: "Fatima",
+          phone: "(215) 712-8013",
+          lines: [],
+          id: 12,
+        },
+      ],
     },
-    type: "custom",
-    position: {
-      x: -420 - 120,
-      y: 720,
+    {
+      value: 3,
+      num: 4,
+      id: 13,
+      nickName: "Other Teams Members",
+      text: "Noviar, Miguel, Nik",
+      lines: [],
     },
-  },
-  {
-    id: "11",
-    data: {
-      label: "Sales",
-      num: 1,
-      last: true,
-    },
-    type: "custom",
-    position: {
-      x: -240 - 120,
-      y: 720,
-    },
-  },
-  {
-    id: "12",
-    data: {
-      label: "Customer Support",
-      num: 2,
-      last: true,
-    },
-    type: "custom",
-    position: {
-      x: -120,
-      y: 720,
-    },
-  },
-  {
-    id: "13",
-    data: {
-      label: "Sales",
-      num: 1,
-      last: true,
-    },
-    type: "custom",
-    position: {
-      x: 60,
-      y: 720,
-    },
-  },
-  {
-    id: "14",
-    data: {
-      label: "Customer Support",
-      num: 2,
-      last: true,
-    },
-    type: "custom",
-    position: {
-      x: 240,
-      y: 720,
-    },
-  },
-  {
-    id: "15",
-    data: {
-      label: "Office Hours",
-      num: 3,
-      last: true,
-    },
-    type: "custom",
-    position: {
-      x: 420,
-      y: 720,
-    },
-  },
-  {
-    id: "16",
-    data: {
-      label: "Sales",
-      num: 1,
-      last: true,
-    },
-    type: "custom",
-    position: {
-      x: 720 - 120,
-      y: 720,
-    },
-  },
-  {
-    id: "17",
-    data: {
-      label: "Customer Support",
-      num: 2,
-      last: true,
-    },
-    type: "custom",
-    position: {
-      x: 840,
-      y: 720,
-    },
-  },
-];
-
-const initialEdges = [
-  { id: "e1-2", source: "1", target: "2", animated: true },
-  { id: "e1-3", source: "1", target: "3", animated: true },
-  { id: "e2-4", source: "2", target: "4", animated: true },
-  { id: "e2-5", source: "2", target: "5", animated: true },
-  { id: "e3-6", source: "3", target: "6", animated: true },
-  { id: "e3-7", source: "3", target: "7", animated: true },
-  { id: "e4-8", source: "4", target: "8", animated: true },
-  { id: "e4-9", source: "4", target: "9", animated: true },
-  { id: "e4-10", source: "4", target: "10", animated: true },
-  { id: "e5-11", source: "5", target: "11", animated: true },
-  { id: "e5-12", source: "5", target: "12", animated: true },
-  { id: "e6-13", source: "6", target: "13", animated: true },
-  { id: "e6-14", source: "6", target: "14", animated: true },
-  { id: "e6-15", source: "6", target: "15", animated: true },
-  { id: "e7-16", source: "7", target: "16", animated: true },
-  { id: "e7-17", source: "7", target: "17", animated: true },
-];
+  ],
+};
 
 function CustomNode({ data }) {
   return (
@@ -251,7 +136,7 @@ function CustomNode({ data }) {
       style={{
         minHeight: 50,
         maxHeight: 200,
-        minWidth: 150,
+        minWidth: 200,
         maxWidth: 200,
         border: "1px solid #eee",
         padding: 5,
@@ -287,38 +172,6 @@ function CustomNode({ data }) {
   );
 }
 
-// const convertToNode = (line, parents = null, index = 0, offset, parentNode) => {
-//   let level = 1;
-//   switch (typeof parents) {
-//     case "number":
-//       if (parents > 0) level = 2;
-//       break;
-//     case "object":
-//       level = 3;
-//       break;
-//     default:
-//       break;
-//   }
-//   const h = typeof parents === "number" ? parents : parents[1];
-
-//   return {
-//     node: {
-//       id: `${index}.${level}`,
-//       data: { label: line.nickName, num: line.num },
-//       type: "custom",
-//       position: {
-//         x: 120 * offset + (parentNode?.position.x / 2 || 0),
-//         y: 120 * level,
-//       },
-//     },
-//     edge: {
-//       id: `e${h}-${index}`,
-//       source: `${h}`,
-//       target: `${index + h + level}`,
-//     },
-//   };
-// };
-
 const types = [
   {
     text: "Option",
@@ -353,280 +206,287 @@ const teamMembers = [
   },
 ];
 
-const demo1 = [
-  {
-    value: 1,
-    nickName: "Language 1",
-    lines: [
-      {
-        value: 1,
-        nickName: "Office 1",
-        lines: [
-          {
-            value: 2,
-            user: "Sales",
-            nickName: "Sales",
-            phone: "(295) 775-8039",
-            num: 1,
-          },
-          {
-            value: 2,
-            user: "Customer Support",
-            nickName: "Support",
-            phone: "(295) 885-8139",
-            num: 2,
-          },
-          {
-            value: 3,
-            nickName: "Office Hours",
-            text: "9:00 AM to 5:00 PM",
-            num: 3,
-          },
-        ],
-        num: 1,
-      },
-      {
-        value: 1,
-        nickName: "Office 2",
-        lines: [
-          {
-            value: 2,
-            user: "Sales",
-            nickName: "Sales",
-            phone: "(295) 795-8139",
-            num: 1,
-          },
-          {
-            value: 2,
-            user: "Customer Support",
-            nickName: "Support",
-            phone: "(295) 885-8139",
-            num: 2,
-          },
-        ],
-        num: 2,
-      },
-    ],
-    num: 1,
-  },
-  {
-    value: 1,
-    nickName: "Language 2",
-    lines: [
-      {
-        value: 1,
-        nickName: "Office 1",
-        lines: [
-          {
-            value: 2,
-            user: "Sales",
-            nickName: "Sales",
-            phone: "(215) 775-8139",
-            num: 1,
-          },
-          {
-            value: 2,
-            user: "Customer Support",
-            nickName: "Support",
-            phone: "(295) 885-8139",
-            num: 2,
-          },
-          {
-            value: 3,
-            nickName: "Office Hours",
-            text: "9:00 AM to 5:00 PM",
-            num: 3,
-          },
-        ],
-        num: 1,
-      },
-      {
-        value: 1,
-        nickName: "Office 2",
-        lines: [
-          {
-            value: 2,
-            user: "Sales",
-            nickName: "Sales",
-            phone: "(295) 775-8138",
-            num: 1,
-          },
-          {
-            value: 2,
-            user: "Customer Support",
-            nickName: "Support",
-            phone: "(295) 885-8139",
-            num: 2,
-          },
-        ],
-        num: 2,
-      },
-    ],
-    num: 2,
-  },
-];
+const demo2 = {
+  value: 1,
+  num: 1,
+  id: 0,
+  nickName: "Main Greeting",
+  lines: [
+    {
+      value: 1,
+      id: 1,
+      nickName: "Language 1",
+      lines: [
+        {
+          value: 1,
+          nickName: "Office 1",
+          id: 2,
 
-const demo2 = [
-  {
-    value: 1,
-    num: 1,
-    nickName: "English",
-    lines: [
-      {
-        value: 2,
-        num: 1,
-        nickName: "Dev",
-        user: "Tejinder",
-        phone: "(215) 709-8523",
-      },
-      {
-        value: 2,
-        num: 2,
-        nickName: "Tester",
-        user: "Yevgen",
-        phone: "(295) 770-8139",
-      },
-      {
-        value: 1,
-        num: 3,
-        nickName: "Support",
-        lines: [
-          {
-            value: 3,
-            num: 1,
-            nickName: "Office Hours",
-            text: "9:00 AM to 5:00 PM",
-          },
-          {
-            value: 3,
-            num: 2,
-            nickName: "Office Location",
-            text: "4514 Travis St Suite 200, Dallas, TX 75205, United States",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: 1,
-    num: 2,
-    nickName: "Spanish",
-    lines: [
-      {
-        value: 3,
-        num: 1,
-        nickName: "Office Hours",
-        text: "9:00 AM to 5:00 PM",
-      },
-      {
-        value: 3,
-        num: 2,
-        nickName: "Office Location",
-        text: "4514 Travis St Suite 200, Dallas, TX 75205, United States",
-      },
-    ],
-  },
-];
+          lines: [
+            {
+              value: 2,
+              id: 3,
+              user: "Sales",
+              nickName: "Sales",
+              phone: "(295) 775-8039",
+              num: 1,
+              lines: [],
+            },
+            {
+              value: 2,
+              user: "Customer Support",
+              nickName: "Support",
+              phone: "(295) 885-8139",
+              num: 2,
+              lines: [],
+              id: 4,
+            },
+            {
+              value: 3,
+              nickName: "Office Hours",
+              text: "9:00 AM to 5:00 PM",
+              num: 3,
+              lines: [],
+              id: 5,
+            },
+          ],
+          num: 1,
+        },
+        {
+          value: 1,
+          nickName: "Office 2",
+          id: 6,
+          lines: [
+            {
+              value: 2,
+              user: "Sales",
+              nickName: "Sales",
+              phone: "(295) 795-8139",
+              num: 1,
+              id: 7,
+              lines: [],
+            },
+            {
+              value: 2,
+              user: "Customer Support",
+              nickName: "Support",
+              phone: "(295) 885-8139",
+              num: 2,
+              lines: [],
+              id: 8,
+            },
+          ],
+          num: 2,
+        },
+      ],
+      num: 1,
+    },
+    {
+      value: 1,
+      nickName: "Language 2",
+      id: 9,
+      lines: [
+        {
+          value: 1,
+          nickName: "Office 1",
+          id: 10,
+          lines: [
+            {
+              value: 2,
+              user: "Sales",
+              nickName: "Sales",
+              phone: "(215) 775-8139",
+              num: 1,
+              id: 12,
+              lines: [],
+            },
+            {
+              value: 2,
+              user: "Customer Support",
+              nickName: "Support",
+              phone: "(295) 885-8139",
+              num: 2,
+              id: 13,
+              lines: [],
+            },
+            {
+              value: 3,
+              nickName: "Office Hours",
+              text: "9:00 AM to 5:00 PM",
+              num: 3,
+              id: 14,
+              lines: [],
+            },
+          ],
+          num: 1,
+        },
+        {
+          value: 1,
+          nickName: "Office 2",
+          id: 15,
+          lines: [
+            {
+              value: 2,
+              user: "Sales",
+              nickName: "Sales",
+              phone: "(295) 775-8138",
+              num: 1,
+              id: 16,
+              lines: [],
+            },
+            {
+              value: 2,
+              user: "Customer Support",
+              nickName: "Support",
+              phone: "(295) 885-8139",
+              num: 2,
+              lines: [],
+              id: 17,
+            },
+          ],
+          num: 2,
+        },
+      ],
+      num: 2,
+    },
+  ],
+};
 
-const demo3 = [
-  {
-    value: 1,
-    num: 1,
-    nickName: "Sales",
-    lines: [
-      {
-        value: 2,
-        num: 1,
-        nickName: "Level 1",
-        user: "Jeremy",
-        phone: "(215) 212-8543",
-      },
-      {
-        value: 2,
-        num: 2,
-        nickName: "Level 2",
-        user: "Lauren",
-        phone: "(205) 712-8241",
-      },
-    ],
-  },
-  {
-    value: 1,
-    num: 2,
-    nickName: "Engineering",
-    lines: [
-      {
-        value: 1,
-        num: 1,
-        nickName: "Frontend",
-        lines: [
-          {
-            value: 2,
-            num: 1,
-            nickName: "React Native",
-            user: "Tejinder",
-            phone: "(215) 712-8503",
-          },
-          {
-            value: 2,
-            num: 2,
-            nickName: "Tester",
-            user: "Yevgen",
-            phone: "(295) 775-8139",
-          },
-        ],
-      },
-      {
-        value: 1,
-        num: 2,
-        nickName: "Backend",
-        lines: [
-          {
-            value: 2,
-            num: 1,
-            nickName: "Lead",
-            user: "Manuk",
-            phone: "(296) 775-8139",
-          },
-        ],
-      },
-    ],
-  },
-  {
-    value: 1,
-    num: 3,
-    nickName: "Customer Support",
-    lines: [
-      {
-        value: 2,
-        num: 1,
-        nickName: "Lauren",
-        user: "Lauren",
-        phone: "(215) 711-8193",
-      },
-      {
-        value: 2,
-        num: 2,
-        nickName: "Fatima",
-        user: "Fatima",
-        phone: "(215) 712-8013",
-      },
-    ],
-  },
-  {
-    value: 3,
-    num: 4,
-    nickName: "Other Teams Members",
-    text: "Noviar, Miguel, Nik",
-  },
-];
+const demo3 = {
+  value: 1,
+  num: 1,
+  id: 0,
+  nickName: "Main Greeting",
+  lines: [
+    {
+      value: 1,
+      num: 1,
+      id: 1,
+      nickName: "Sales",
+      lines: [
+        {
+          value: 2,
+          num: 1,
+          id: 2,
+          nickName: "Level 1",
+          user: "Jeremy",
+          phone: "(215) 212-8543",
+          lines: [],
+        },
+        {
+          value: 2,
+          num: 2,
+          nickName: "Level 2",
+          user: "Lauren",
+          phone: "(205) 712-8241",
+          lines: [],
+          id: 3,
+        },
+      ],
+    },
+    {
+      value: 1,
+      num: 2,
+      nickName: "Engineering",
+      id: 4,
+      lines: [
+        {
+          value: 1,
+          num: 1,
+          nickName: "Frontend",
+          id: 5,
+          lines: [
+            {
+              value: 2,
+              num: 1,
+              nickName: "React Native",
+              user: "Tejinder",
+              phone: "(215) 712-8503",
+              lines: [],
+              id: 6,
+            },
+            {
+              value: 2,
+              num: 2,
+              nickName: "Tester",
+              user: "Yevgen",
+              phone: "(295) 775-8139",
+              lines: [],
+              id: 7,
+            },
+          ],
+        },
+        {
+          value: 1,
+          num: 2,
+          nickName: "Backend",
+          id: 8,
+          lines: [
+            {
+              value: 2,
+              num: 1,
+              nickName: "Lead",
+              user: "Manuk",
+              phone: "(296) 775-8139",
+              lines: [],
+              id: 9,
+            },
+          ],
+        },
+      ],
+    },
+    {
+      value: 1,
+      num: 3,
+      id: 10,
+      nickName: "Customer Support",
+      lines: [
+        {
+          value: 2,
+          num: 1,
+          nickName: "Lauren",
+          user: "Lauren",
+          phone: "(215) 711-8193",
+          lines: [],
+          id: 11,
+        },
+        {
+          value: 2,
+          num: 2,
+          nickName: "Fatima",
+          user: "Fatima",
+          phone: "(215) 712-8013",
+          lines: [],
+          id: 12,
+        },
+      ],
+    },
+    {
+      value: 3,
+      num: 4,
+      id: 13,
+      nickName: "Other Teams Members",
+      text: "Noviar, Miguel, Nik",
+      lines: [],
+    },
+  ],
+};
 
 const demos = [demo1, demo2, demo3];
 
-function Flow({ setActive }) {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+function Flow({ setActive, root }) {
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [random, setRandom] = useState();
   const nodeTypes = useMemo(() => ({ custom: CustomNode }), []);
+
+  useEffect(() => {
+    const data = drawTree(root);
+    setNodes(data.nodes);
+    console.log(data.edges);
+    setEdges(data.edges);
+  }, [setEdges, setNodes]);
 
   const onConnect = useCallback((params) => {}, []);
   const [darkMode, setDarkMode] = useState(true);
@@ -681,9 +541,9 @@ function Flow({ setActive }) {
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
         onConnect={onConnect}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        nodesFocusable={false}
+        // nodesDraggable={false}
+        // nodesConnectable={false}
+        // nodesFocusable={false}
         fitView
         style={{ background: darkMode ? "rgb(26,26,43)" : "#EAEAEA" }}
       >
@@ -694,73 +554,9 @@ function Flow({ setActive }) {
   );
 }
 
-// const getNodes = (phoneTreeLines = []) => {
-//   let nodes = [
-//     {
-//       id: "0",
-//       data: {
-//         label: "Main Greeting",
-//       },
-//       type: "custom",
-//       position: {
-//         x: 0,
-//         y: 0,
-//       },
-//     },
-//   ];
-
-//   let edges = [];
-//   let len = phoneTreeLines.length;
-//   for (let x = 0; x < len; x++) {
-//     const currentLine = phoneTreeLines[x];
-//     const hasLines = currentLine.lines?.length > 0;
-//     const { node, edge } = convertToNode(
-//       currentLine,
-//       0,
-//       x + 1,
-//       x + 1 <= len / 2 ? -(x + 1) : x,
-//       null
-//     );
-//     nodes.push(node);
-//     edges.push(edge);
-//     if (hasLines) {
-//       for (let y = 0; y < currentLine.lines.length; y++) {
-//         len = currentLine.lines.length;
-//         const currentChildLine = currentLine.lines[y];
-//         const hasLines = currentChildLine.lines?.length > 0;
-//         const { node1, edge1 } = convertToNode(
-//           currentChildLine,
-//           x + 1,
-//           y + 1,
-//           y + 1 <= len / 2 ? -(y + 1) : y,
-//           node
-//         );
-//         nodes.push(node1);
-//         edges.push(edge1);
-//         // if (hasLines) {
-//         //   for (let z = 0; z < currentChildLine.lines.length; z++) {
-//         //     len = currentChildLine.lines.length;
-//         //     const current = currentChildLine.lines[z];
-//         //     const { node, edge } = convertToNode(
-//         //       current,
-//         //       [x + 1, y + 1],
-//         //       z + 1,
-//         //       z + 1 <= len / 2 ? -(z + 1) : z
-//         //     );
-//         //     nodes.push(node);
-//         //     edges.push(edge);
-//         //   }
-//         // }
-//       }
-//     }
-//   }
-//   console.log(nodes);
-//   console.log(edges);
-// };
-
 function App() {
   const [phoneTreeEnabled, setPhoneTreeEnabled] = useState(true);
-  const [active, setActive] = useState(false);
+  const [active, setActive] = useState(true);
 
   const [random, setRandom] = useState();
   const [phoneTreeLines, setPhoneTreeLines] = useState(demo1);
@@ -779,6 +575,8 @@ function App() {
     setActiveDemo(null);
     setPhoneTreeLines([]);
   };
+
+  useEffect(() => {}, []);
 
   const addLine = useCallback(
     async (props) => {
@@ -829,7 +627,7 @@ function App() {
 
   return (
     <div className="App">
-      {active && <Flow setActive={setActive} />}
+      {active && <Flow setActive={setActive} root={demos[activeDemo]} />}
       <Container className="span-2 p-3">
         <span className="h3">+12155932785</span>
         <hr />
@@ -879,7 +677,7 @@ function App() {
             Copy Demo details
           </Button>
         </Container>
-        {phoneTreeEnabled ? (
+        {false ? (
           renderPhoneTreeLines(phoneTreeLines, addLine)()
         ) : (
           <Button onClick={() => setPhoneTreeEnabled(true)}>
