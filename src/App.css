@@ -1,0 +1,4 @@
+.new-node.active{
+    transform: translate(115%,-50%);
+    transition: transform 300;
+}

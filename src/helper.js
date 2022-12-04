@@ -10,7 +10,7 @@ class Node {
     this.parent = parent;
     this.prevSibling = prevSibling;
     this.lines = [];
-    this.last = dataNode.lines.length === 0;
+    this.last = dataNode?.lines?.length === 0;
 
     this.dataNode = dataNode;
   }
@@ -78,13 +78,6 @@ function fixNodeConflicts(root) {
     // console.log(botContour, topContour, root.lines[i + 1].dataNode.nickName);
 
     if (Math.abs(topContour - botContour) <= 200 || botContour >= topContour) {
-      console.log(
-        "Conflict at ",
-        root.lines[i].dataNode.nickName,
-        botContour,
-        root.lines[i + 1].dataNode.nickName,
-        topContour
-      );
       root.finalY += (botContour + 200 - topContour + 50) / root.lines.length;
       shiftDown(root.lines[i + 1], botContour + 200 - topContour + 50);
     }
@@ -93,7 +86,7 @@ function fixNodeConflicts(root) {
 
 function buildTree(dataNode, parent, prevSibling, level) {
   let root = new Node(level, 0, parent, prevSibling, dataNode);
-  for (let i = 0; i < dataNode.lines.length; i++) {
+  for (let i = 0; i < dataNode?.lines?.length; i++) {
     root.lines.push(
       buildTree(
         dataNode.lines[i],
@@ -198,15 +191,16 @@ const convertToList = (root) => {
       id: JSON.stringify(id),
       position: {
         x: finalY,
-        y: y * 300,
+        y: y * 250,
       },
       data: {
         value,
         label: nickName,
         num,
         last: node.last,
+        data: node.dataNode,
       },
-      type: "custom",
+      type: node.dataNode.type,
     });
     if (node.parent) {
       edges.push({
@@ -214,6 +208,7 @@ const convertToList = (root) => {
         source: `${node.parent.id}`,
         target: `${node.id}`,
         animated: true,
+        type: node.dataNode.type === "new" ? "" : "buttonedge",
       });
     }
   }
@@ -236,6 +231,7 @@ const fixMain = (root) => {
 };
 
 export default function drawTree(data) {
+  console.log(data);
   let root = buildTree(data, null, null, 0, 0);
 
   calculateInitialValues(root);
@@ -245,6 +241,5 @@ export default function drawTree(data) {
   assignSiblingCounts(root);
 
   fixMain(root);
-
   return convertToList(root);
 }

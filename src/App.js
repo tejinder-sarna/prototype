@@ -1,15 +1,34 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Accordion, Badge, Button, Container, Form } from "react-bootstrap";
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import {
+  Accordion,
+  Badge,
+  Button,
+  Card,
+  Container,
+  Form,
+} from "react-bootstrap";
 import ReactFlow, {
   Controls,
   Background,
   useNodesState,
   useEdgesState,
+  Panel,
 } from "reactflow";
 import { Handle, Position } from "reactflow";
+import useUndoable from "use-undoable";
+import ButtonEdge from "./ButtonEdge.js";
 
 import "reactflow/dist/style.css";
 import drawTree from "./helper";
+import PhoneTreeContext, { PhoneTreeProvider } from "./phoneTreeContext.js";
+import NewNode from "./newNode.js";
 
 const demo1 = {
   value: 1,
@@ -19,118 +38,84 @@ const demo1 = {
     {
       value: 1,
       num: 1,
+      nickName: "English",
       id: 1,
-      nickName: "Sales",
       lines: [
         {
           value: 2,
           num: 1,
+          nickName: "Dev",
+          user: "Tejinder",
+          phone: "(215) 709-8523",
           id: 2,
-          nickName: "Level 1",
-          user: "Jeremy",
-          phone: "(215) 212-8543",
           lines: [],
         },
         {
           value: 2,
           num: 2,
-          nickName: "Level 2",
-          user: "Lauren",
-          phone: "(205) 712-8241",
-          lines: [],
+          nickName: "Tester",
+          user: "Yevgen",
+          phone: "(295) 770-8139",
           id: 3,
+          lines: [],
+        },
+        {
+          value: 1,
+          num: 3,
+          nickName: "Support",
+          id: 4,
+          lines: [
+            {
+              value: 3,
+              num: 1,
+              nickName: "Office Hours",
+              text: "9:00 AM to 5:00 PM",
+              id: 5,
+              lines: [],
+            },
+            {
+              value: 3,
+              num: 2,
+              nickName: "Office Location",
+              text: "4514 Travis St Suite 200, Dallas, TX 75205, United States",
+              id: 6,
+              lines: [],
+            },
+          ],
         },
       ],
     },
     {
       value: 1,
       num: 2,
-      nickName: "Engineering",
-      id: 4,
+      nickName: "Spanish",
+      id: 7,
       lines: [
         {
-          value: 1,
+          value: 3,
           num: 1,
-          nickName: "Frontend",
-          id: 5,
-          lines: [
-            {
-              value: 2,
-              num: 1,
-              nickName: "React Native",
-              user: "Tejinder",
-              phone: "(215) 712-8503",
-              lines: [],
-              id: 6,
-            },
-            {
-              value: 2,
-              num: 2,
-              nickName: "Tester",
-              user: "Yevgen",
-              phone: "(295) 775-8139",
-              lines: [],
-              id: 7,
-            },
-          ],
-        },
-        {
-          value: 1,
-          num: 2,
-          nickName: "Backend",
+          nickName: "Office Hours",
+          text: "9:00 AM to 5:00 PM",
           id: 8,
-          lines: [
-            {
-              value: 2,
-              num: 1,
-              nickName: "Lead",
-              user: "Manuk",
-              phone: "(296) 775-8139",
-              lines: [],
-              id: 9,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      value: 1,
-      num: 3,
-      id: 10,
-      nickName: "Customer Support",
-      lines: [
-        {
-          value: 2,
-          num: 1,
-          nickName: "Lauren",
-          user: "Lauren",
-          phone: "(215) 711-8193",
           lines: [],
-          id: 11,
         },
         {
-          value: 2,
+          value: 3,
           num: 2,
-          nickName: "Fatima",
-          user: "Fatima",
-          phone: "(215) 712-8013",
+          nickName: "Office Location",
+          text: "4514 Travis St Suite 200, Dallas, TX 75205, United States",
+          id: 9,
           lines: [],
-          id: 12,
         },
       ],
-    },
-    {
-      value: 3,
-      num: 4,
-      id: 13,
-      nickName: "Other Teams Members",
-      text: "Noviar, Miguel, Nik",
-      lines: [],
     },
   ],
 };
 
 function CustomNode({ data }) {
+  const [hover, setHover] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const { parent, setParent } = useContext(PhoneTreeContext);
   return (
     <div
       style={{
@@ -145,12 +130,25 @@ function CustomNode({ data }) {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        zIndex: 100,
+        // position: "relative",
+      }}
+      onMouseEnter={() => {
+        setHover(true);
+      }}
+      onMouseLeave={() => {
+        setTimeout(() => {
+          if (!hovered) setHover(false);
+        }, 500);
+      }}
+      onClick={() => {
+        setParent(data);
       }}
     >
       {data.num && (
         <>
           <Handle type="target" position={Position.Top} />
-          <label
+          {/* <label
             htmlFor="text"
             className=" btn btn-primary"
             style={{
@@ -158,19 +156,75 @@ function CustomNode({ data }) {
               top: -16,
               fontSize: 12,
               padding: "4px 8px",
+              borderRadius: 5,
+              zIndex: 2000,
             }}
           >
             Press {data.num}
-          </label>
+          </label> */}
         </>
       )}
       <div>
+        {hover && (
+          <span
+            style={{
+              position: "absolute",
+              left: 0,
+              top: 0,
+              width: "100%",
+              height: "100%",
+              zIndex: 1000,
+              border: "1px solid #eee",
+              padding: 5,
+              borderRadius: 5,
+              background: "white",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            Add a new route
+          </span>
+        )}
         <span style={{ fontSize: 12 }}>{data.label}</span>
       </div>
       {!data.last && <Handle type="source" position={Position.Bottom} id="a" />}
+      <div
+        className={`new-node ${hover ? "active" : ""} `}
+        style={{
+          position: "absolute",
+          right: 0,
+          top: "50%",
+          transform:
+            hover || hovered ? "translate(45px,-50%)" : "translate(0%,-50%)",
+          transition: "transform 0.3s",
+          backgroundColor: "white",
+          width: 40,
+          height: 40,
+          borderRadius: 10,
+          zIndex: -1,
+          fontSize: 24,
+          justifyContent: "center",
+          alignItems: "center",
+          display: "flex",
+        }}
+        onMouseEnter={() => {
+          setHovered(true);
+        }}
+        onMouseLeave={() => {
+          setHover(false);
+          setHovered(false);
+        }}
+      >
+        +
+      </div>
     </div>
   );
 }
+
+const edgeTypes = {
+  buttonedge: ButtonEdge,
+};
 
 const types = [
   {
@@ -473,23 +527,45 @@ const demo3 = {
 };
 
 const demos = [demo1, demo2, demo3];
+const nodeTypes = { custom: CustomNode, new: NewNode };
 
 function Flow({ setActive, root }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
 
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [prevState, setPrevState] = useState({
+    nodes,
+    edges,
+  });
+
   const [random, setRandom] = useState();
-  const nodeTypes = useMemo(() => ({ custom: CustomNode }), []);
 
   useEffect(() => {
     const data = drawTree(root);
     setNodes(data.nodes);
-    console.log(data.edges);
     setEdges(data.edges);
-  }, [setEdges, setNodes]);
+    setPrevState(data);
+  }, [setEdges, setNodes, root]);
 
   const onConnect = useCallback((params) => {}, []);
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+
+  const customOnNodeChange = (props) => {
+    onNodesChange(props);
+  };
+
+  const customUndo = () => {
+    setNodes(prevState.nodes);
+    setEdges(prevState.edges);
+    setRandom(Math.random() * 1000);
+  };
+
+  const saveProgress = () => {
+    setPrevState({
+      nodes,
+      edges,
+    });
+  };
 
   return (
     <div
@@ -502,45 +578,15 @@ function Flow({ setActive, root }) {
         zIndex: 500,
       }}
     >
-      <div
-        style={{
-          width: 200,
-          height: 50,
-          position: "absolute",
-          backgroundColor: "white",
-          zIndex: 1000,
-          right: 0,
-          borderBottomLeftRadius: 8,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Button
-          variant="light"
-          onClick={() => {
-            setDarkMode((mode) => !mode);
-          }}
-          className="mx-2"
-        >
-          {darkMode ? "Light Mode" : "Dark Mode"}
-        </Button>
-        <Button
-          variant="danger"
-          onClick={() => {
-            setActive(false);
-          }}
-        >
-          Close
-        </Button>
-      </div>
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
+        onNodesChange={customOnNodeChange}
         onEdgesChange={onEdgesChange}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onConnect={onConnect}
+        snapToGrid
         // nodesDraggable={false}
         // nodesConnectable={false}
         // nodesFocusable={false}
@@ -549,6 +595,24 @@ function Flow({ setActive, root }) {
       >
         <Controls showInteractive={false} />
         <Background />
+        <Panel position="top-right">
+          <Button variant="light" onClick={saveProgress} className="mx-2">
+            Save
+          </Button>
+          <Button variant="danger" onClick={customUndo}>
+            Undo
+          </Button>
+          <Button
+            variant="light"
+            onClick={() => setActive(false)}
+            className="mx-2"
+          >
+            Close
+          </Button>
+        </Panel>
+        <Panel>
+          <NewNodeForm />
+        </Panel>
       </ReactFlow>
     </div>
   );
@@ -584,6 +648,7 @@ function App() {
         value: JSON.parse(props.value),
         num: props.num,
         nickName: props.nickname,
+        parent: props.parent,
       };
       switch (newLine.value) {
         case 2:
@@ -626,66 +691,87 @@ function App() {
   );
 
   return (
-    <div className="App">
-      {active && <Flow setActive={setActive} root={demos[activeDemo]} />}
-      <Container className="span-2 p-3">
-        <span className="h3">+12155932785</span>
-        <hr />
-        <span className="h4">Phone Tree</span>
-        <span className="text-muted d-block my-2">
-          Option - Announced in voice and implies that this contains more sub
-          paths.
-          <br /> Team member - assigned to team member (for users) Announced as
-          the nickName of the path (like "Support")
-          <br /> Bot Message - Used to give some information to the caller like
-          Office Hours
-        </span>
-        <Container>
-          {demos.map((x, i) => {
-            return (
-              <Button
-                key={i}
-                className="m-2"
-                onClick={() => {
-                  setDemo(i);
-                }}
-                variant={i === activeDemo ? "primary" : "light"}
-              >
-                Demo {i + 1}
-              </Button>
-            );
-          })}
-          <Button className="m-2" onClick={reset} variant="danger">
-            Reset
-          </Button>
-          <Button
-            className="mx-2"
-            style={{ float: "right" }}
-            onClick={() => {
-              setActive(true);
+    <PhoneTreeProvider>
+      <div className="App">
+        {active && (
+          <Flow
+            setActive={setActive}
+            root={{
+              value: 1,
+              id: 0,
+              nickName: "Main Greeting",
+              type: "custom",
+              lines: [
+                {
+                  value: 2,
+                  num: 2,
+                  lines: [],
+                  type: "new",
+                  id: 1,
+                },
+              ],
             }}
-            variant="info"
-          >
-            Visualize Phone Tree
-          </Button>
-          <Button
-            className="mx-2"
-            style={{ float: "right" }}
-            onClick={saveDemo}
-            variant="success"
-          >
-            Copy Demo details
-          </Button>
-        </Container>
-        {false ? (
-          renderPhoneTreeLines(phoneTreeLines, addLine)()
-        ) : (
-          <Button onClick={() => setPhoneTreeEnabled(true)}>
-            Enable Phone Tree
-          </Button>
+          />
         )}
-      </Container>
-    </div>
+        <Container className="span-2 p-3">
+          <span className="h3">+12155932785</span>
+          <hr />
+          <span className="h4">Phone Tree</span>
+          <span className="text-muted d-block my-2">
+            Option - Announced in voice and implies that this contains more sub
+            paths.
+            <br /> Team member - assigned to team member (for users) Announced
+            as the nickName of the path (like "Support")
+            <br /> Bot Message - Used to give some information to the caller
+            like Office Hours
+          </span>
+          <Container>
+            {demos.map((x, i) => {
+              return (
+                <Button
+                  key={i}
+                  className="m-2"
+                  onClick={() => {
+                    setDemo(i);
+                  }}
+                  variant={i === activeDemo ? "primary" : "light"}
+                >
+                  Demo {i + 1}
+                </Button>
+              );
+            })}
+            <Button className="m-2" onClick={reset} variant="danger">
+              Reset
+            </Button>
+            <Button
+              className="mx-2"
+              style={{ float: "right" }}
+              onClick={() => {
+                setActive(true);
+              }}
+              variant="info"
+            >
+              Visualize Phone Tree
+            </Button>
+            <Button
+              className="mx-2"
+              style={{ float: "right" }}
+              onClick={saveDemo}
+              variant="success"
+            >
+              Copy Demo details
+            </Button>
+          </Container>
+          {false ? (
+            renderPhoneTreeLines(phoneTreeLines, addLine)()
+          ) : (
+            <Button onClick={() => setPhoneTreeEnabled(true)}>
+              Enable Phone Tree
+            </Button>
+          )}
+        </Container>
+      </div>
+    </PhoneTreeProvider>
   );
 }
 
@@ -744,8 +830,8 @@ const TypeSelector = ({
     <div
       style={{
         marginLeft: 10,
-        display: "flex",
-        flexDirection: "row",
+        // display: "flex",
+        // flexDirection: "row",
       }}
     >
       <Form.Select
@@ -759,9 +845,6 @@ const TypeSelector = ({
           </option>
         ))}
       </Form.Select>
-      <Button style={{ marginLeft: 10 }} onClick={onCreate}>
-        {editing ? "Save" : "Create"}
-      </Button>
     </div>
   );
 };
@@ -1007,5 +1090,79 @@ const NewPhoneTreeLine = ({ num, onCreate, parent = null, level }) => {
     </Accordion.Item>
   );
 };
+
+function NewNodeForm(root, setRootData, nodes) {
+  const { parent, setParent } = useContext(PhoneTreeContext);
+  console.log(parent);
+  const [optionSelected, setOptionSelected] = useState("1");
+  const [memberSelected, setMemberSelected] = useState(0);
+  const [botMessage, setBotMessage] = useState("");
+  const [nickname, setNickname] = useState("");
+
+  const reset = () => {
+    setOptionSelected("1");
+    setMemberSelected(0);
+    setBotMessage("");
+    setNickname("");
+  };
+
+  // useEffect(() => {
+  //   reset();
+  // }, [num, parent, level]);
+
+  // const fixedValue = useMemo(() => {
+  //   return level === 3 ? JSON.parse(optionSelected) + 1 : optionSelected;
+  // }, [level, optionSelected]);
+  return (
+    <Container
+      style={{
+        backgroundColor: "white",
+        borderRadius: 8,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 10,
+      }}
+    >
+      {!parent && (
+        <Button variant="light" disabled>
+          Click on any node to view/edit its' properties.
+        </Button>
+      )}
+      {parent && (
+        <div>
+          <span
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <p className="btn btn-primary ">
+              Press {parent.num} for {parent.label}
+            </p>
+          </span>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Button variant="light" className="mx-2" size="sm">
+              Edit
+            </Button>
+            <Button variant="success" className="mx-2" size="sm">
+              Add Child Node
+            </Button>
+            <Button variant="danger" className="mx-2" size="sm">
+              Delete
+            </Button>
+          </div>
+        </div>
+      )}
+    </Container>
+  );
+}
 
 export default App;
